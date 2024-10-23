@@ -1,0 +1,62 @@
+### Health Check
+GET http://localhost:3000/orders
+Authorization: Bearer USER
+
+### Get Order
+GET http://localhost:3000/orders/a10fb905-95d6-4033-b300-1079f5da153b
+Authorization: Bearer USER
+
+### Create Order
+POST http://localhost:3000/orders
+Content-Type: application/json
+// 先從簡(aka偷懶)
+// 直接給身份，就不簽成 JWT 了(非本次 scope 關注的範圍)
+Authorization: Bearer USER
+
+{
+  "id": null,
+  "customerId": "ed03fdf5-8ce4-4a66-b76b-8220e5da3b29",
+  "address": "123 Main St, Taipei, Taiwan 10001",
+  "createdAt": "2023-05-15T10:30:00Z",
+  "status": "created",
+  "paymentInfo": {
+    "cardType": "Visa",
+    "last4Digits": "4321"
+  },
+  "paymentMethod": "credit_card",
+  "note": "Please leave the package at the front door",
+  "shipments": [
+    {
+      "id": null,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "orderItems": [
+        {
+          "id": null,
+          "productId": "PROD-001",
+          "quantity": 2,
+          "totalPrice": 1000
+        },
+        {
+          "id": null,
+          "productId": "PROD-002",
+          "quantity": 1,
+          "totalPrice": 500
+        }
+      ]
+    },
+    {
+      "id": null,
+      "status": "pending",
+      "paymentStatus": "pending",
+      "orderItems": [
+        {
+          "id": null,
+          "productId": "PROD-003",
+          "quantity": 3,
+          "totalPrice": 1500
+        }
+      ]
+    }
+  ]
+}
