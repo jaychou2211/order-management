@@ -1,7 +1,7 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, HttpException, Logger } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Transaction } from 'src/shared/database/transaction.interface';
+import { Transaction } from '@app/common';
 
 @Injectable()
 export class OrderInterceptor implements NestInterceptor {

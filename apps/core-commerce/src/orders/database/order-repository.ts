@@ -1,4 +1,4 @@
-import { Transaction } from 'src/shared/database/transaction.interface';
+import { Transaction } from '@app/common';
 import { IOrderRepository } from './order-repository.interface';
 import { OrderModel } from './models/order.model';
 import { ShipmentModel } from './models/shipment.model';

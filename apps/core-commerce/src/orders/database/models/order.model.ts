@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
 import { OrderStatus } from '../../domain/order';
-import { ShipmentModel } from './shipment.model';
 
 @Entity('orders')
 export class OrderModel {

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { QueryAccessRule } from "./query-access-rule";
 import { OrderQuery } from "./order-query-list";
-import { OrderQueryHandler } from "src/orders/database/order-query-handler";
+import { OrderQueryHandler } from "../../database/order-query-handler";
 
 @Injectable()
 export class OrderQueryService {

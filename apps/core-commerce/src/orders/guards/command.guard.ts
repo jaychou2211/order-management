@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, Scope, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { OrderCommandService } from '../service/command/order-command.service';
-import { Transaction } from 'src/shared/database/transaction.interface';
+import { Transaction } from '@app/common';
 import { OrderRepository } from '../database/order-repository';
 
 @Injectable({ scope: Scope.REQUEST })
