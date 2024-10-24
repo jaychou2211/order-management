@@ -1,8 +1,8 @@
 import { Controller, Post } from '@nestjs/common';
-import { AmazonOrderService } from './amazon-order.service';
+import { AmazonOrderService } from './amazon-orders.service';
 import { OnEvent } from '@nestjs/event-emitter';
 
-@Controller('amazon-order')
+@Controller('amazon-orders')
 export class AmazonOrderController {
   constructor(private readonly amazonOrderService: AmazonOrderService) { }
 
@@ -23,6 +23,13 @@ export class AmazonOrderController {
   async createOrder(payload: { AmazonOrderId: string }) {
     return this.amazonOrderService.createOrder(payload.AmazonOrderId);
   }
+
+  @Post('create-order')
+  async createOrderHttp() {
+    console.log('createOrderHttp');
+    return this.amazonOrderService.createOrder('123456');
+  }
+
 
   /**
    * 模擬收到 message queue 的 [amazon-order.update] event

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { OrderCommandService } from './service/command/order-command.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { AuthGuard } from './guards/auth.guard';
@@ -9,6 +9,7 @@ import { QueryGuard } from './guards/query.guard';
 import { OrderCommand } from './service/command/order-command-list';
 import { OrderQuery } from './service/query/order-query-list';
 import { OrderInterceptor } from './interceptors/order.interceptor';
+import { EventPattern, Payload } from '@nestjs/microservices';
 
 @Controller('orders')
 @UseInterceptors(OrderInterceptor)
@@ -35,8 +36,14 @@ export class OrdersController {
   @CommandAction(OrderCommand.CREATE)
   @UseGuards(AuthGuard, CommandGuard)
   createOrder(@Body() createOrderDto: CreateOrderDto) {
-    console.dir(createOrderDto, { depth: Infinity });
     return this.orderCommandService.create(createOrderDto);
+  }
+
+  @EventPattern('order.create')
+  @CommandAction(OrderCommand.CREATE)
+  @UseGuards(AuthGuard, CommandGuard)
+  createOrderWithEvent(@Payload() data: CreateOrderDto) {
+    return this.orderCommandService.create(data);
   }
 
   @Put(':id/check')

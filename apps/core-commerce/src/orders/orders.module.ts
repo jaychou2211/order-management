@@ -9,6 +9,7 @@ import { OrderQueryHandler } from './database/order-query-handler';
 import { OrderModel } from './database/models/order.model';
 import { ShipmentModel } from './database/models/shipment.model';
 import { OrderItemModel } from './database/models/order-item.model';
+import { ContextStorage } from './context-storage/context.storage';
 
 @Module({
   imports: [DatabaseModule.forFeature({
@@ -25,7 +26,8 @@ import { OrderItemModel } from './database/models/order-item.model';
     OrderQueryService, QueryAccessRule, {
       provide: 'ORDER_QUERY_HANDLER',
       useClass: OrderQueryHandler
-    }
+    },
+    ContextStorage
   ],
   exports: [],
 })

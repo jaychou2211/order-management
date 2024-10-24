@@ -2,14 +2,18 @@ import { Injectable, NestInterceptor, ExecutionContext, CallHandler, HttpExcepti
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Transaction } from '@app/common';
+import { ContextStorage } from '../context-storage/context.storage';
 
 @Injectable()
 export class OrderInterceptor implements NestInterceptor {
   private readonly logger = new Logger(OrderInterceptor.name);
+  constructor(
+    private readonly contextStorage: ContextStorage
+  ) { }
+
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const now = Date.now();
-    const request = context.switchToHttp().getRequest();
-    const transaction: Transaction = request.transaction;
+    const transaction = this.contextStorage.getContext('transaction');
 
     return next.handle().pipe(
       tap(async () => {

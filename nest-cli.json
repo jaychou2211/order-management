@@ -19,13 +19,13 @@
         "tsConfigPath": "apps/core-commerce/tsconfig.app.json"
       }
     },
-    "channel-order-sync": {
+    "channel-orders": {
       "type": "application",
-      "root": "apps/channel-order",
+      "root": "apps/channel-orders",
       "entryFile": "main",
-      "sourceRoot": "apps/channel-order/src",
+      "sourceRoot": "apps/channel-orders/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/channel-order/tsconfig.app.json"
+        "tsConfigPath": "apps/channel-orders/tsconfig.app.json"
       }
     },
     "common": {

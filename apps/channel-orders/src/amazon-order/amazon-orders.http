@@ -1,0 +1,4 @@
+
+### Create Order
+POST http://localhost:3002/amazon-orders/create-order
+Authorization: Bearer USER
