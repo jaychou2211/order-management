@@ -21,11 +21,11 @@
     },
     "channel-order-sync": {
       "type": "application",
-      "root": "apps/channel-order-sync",
+      "root": "apps/channel-order",
       "entryFile": "main",
-      "sourceRoot": "apps/channel-order-sync/src",
+      "sourceRoot": "apps/channel-order/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/channel-order-sync/tsconfig.app.json"
+        "tsConfigPath": "apps/channel-order/tsconfig.app.json"
       }
     },
     "common": {

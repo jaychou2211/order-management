@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { ChannelOrderSyncModule } from './../src/channel-order-sync.module';
+import { ChannelOrderSyncModule } from '../src/app.module';
 
 describe('ChannelOrderSyncController (e2e)', () => {
   let app: INestApplication;

@@ -5,7 +5,7 @@ import { PaymentStatus, ShipmentStatus } from '../domain/shipment';
 import { OrderStatus } from '../domain/order';
 
 export class CreateOrderItemDto {
-  @Transform(({value}) =>  value || uuidv4())
+  @Transform(({ value }) => value || uuidv4())
   id: string;
 
   @IsString()
@@ -22,7 +22,7 @@ export class CreateOrderItemDto {
 }
 
 export class CreateShipmentDto {
-  @Transform(({value}) =>  value || uuidv4())
+  @Transform(({ value }) => value || uuidv4())
   id: string;
 
   @IsEnum(ShipmentStatus)
