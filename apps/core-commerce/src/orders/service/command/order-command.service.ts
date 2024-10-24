@@ -2,19 +2,20 @@ import { Injectable, Scope } from "@nestjs/common";
 import { OrderStateMachine } from "./order-state-machine";
 import { Order } from "../../domain/order";
 import { OrderCommand } from "./order-command-list";
+import { IOrderRepository } from "../../database/order-repository.interface";
 
 type OrderRepository = any
 
 @Injectable({ scope: Scope.REQUEST })
 export class OrderCommandService {
-  private orderRepository: OrderRepository;
+  private orderRepository: IOrderRepository;
   private identity: string; // to-do
 
   constructor(
     private readonly orderStateMachine: OrderStateMachine
   ) { }
 
-  setOrderRepository(orderRepository: OrderRepository) {
+  setOrderRepository(orderRepository: IOrderRepository) {
     this.orderRepository = orderRepository;
   }
 

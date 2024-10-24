@@ -1,13 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { QueryAccessRule } from "./query-access-rule";
 import { OrderQuery } from "./order-query-list";
-import { OrderQueryHandler } from "../../database/order-query-handler";
+import { IOrderQueryHandler } from "../../database/order-query-handler.interface";
 
 @Injectable()
 export class OrderQueryService {
   constructor(
     private readonly queryAccessRule: QueryAccessRule,
-    private readonly orderQueryHandler: OrderQueryHandler,
+    @Inject('ORDER_QUERY_HANDLER')
+    private readonly orderQueryHandler: IOrderQueryHandler,
   ) { }
 
   async canExecute(actionName: OrderQuery, identity: string) {

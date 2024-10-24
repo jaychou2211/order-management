@@ -22,7 +22,10 @@ import { OrderItemModel } from './database/models/order-item.model';
   controllers: [OrdersController],
   providers: [
     OrderCommandService, OrderStateMachine,
-    OrderQueryService, QueryAccessRule, OrderQueryHandler
+    OrderQueryService, QueryAccessRule, {
+      provide: 'ORDER_QUERY_HANDLER',
+      useClass: OrderQueryHandler
+    }
   ],
   exports: [],
 })
