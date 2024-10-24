@@ -4,12 +4,10 @@ import { Order } from "../../domain/order";
 import { OrderCommand } from "./order-command-list";
 import { IOrderRepository } from "../../database/order-repository.interface";
 
-type OrderRepository = any
-
 @Injectable({ scope: Scope.REQUEST })
 export class OrderCommandService {
   private orderRepository: IOrderRepository;
-  private identity: string; // to-do
+  private identity: string;
 
   constructor(
     private readonly orderStateMachine: OrderStateMachine
@@ -28,7 +26,7 @@ export class OrderCommandService {
     actionName: OrderCommand,
   ) {
     if (!this.orderRepository) throw 'orderRepository 未被注入';
-    // to-do: 檢查有沒有其他使用者正在修改訂單 by lock
+    // 檢查有沒有其他使用者正在修改訂單 by distributed lock 
     const order = (actionName === 'create')
       ? { status: null }
       : await this.orderRepository.findById(orderId);
@@ -47,8 +45,8 @@ export class OrderCommandService {
     operation: (args: any) => any
   ) {
     if (!this.orderRepository) throw 'orderRepository 未被注入';
-    // 檢查有沒有其他使用者正在修改訂單 by lock
-    // 先假設沒有
+    // 檢查有沒有其他使用者正在修改訂單 by distributed lock 
+    // 有的話拋錯, 這裡先假設沒有 (beyond the scope of our current implementation)
     const order = await this.orderRepository.findById(orderId);
     // 查到後上鎖(因為要改 order 的狀態了)
 
@@ -71,14 +69,17 @@ export class OrderCommandService {
       console.log(domainEvent);
     });
 
-    // 釋放鎖
-    // to-do
+    // release distributed lock
     return true;
   }
 
   public async create(createOrderProps: Parameters<typeof Order.create>[0]) {
     const result = this.orderStateMachine.canExecute(OrderCommand.CREATE, null, this.identity);
     if (!result.canExecute) throw '身份不允許或是目前狀態不允許執行該動作';
+
+    // 照理來講這裡要先跟 ProductService 確認商品的資訊
+    // ex: 商品是否存在, 庫存是否足夠, 總價是否正確
+    // 這裡先假設商品資訊都正確 (beyond the scope of our current implementation)
 
     // 建立訂單
     const { order, domainEvents } = Order.create(createOrderProps);
