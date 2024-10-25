@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity('order_items')
 export class OrderItemModel {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn()
   id: string;
 
   @Column()
@@ -19,6 +19,9 @@ export class OrderItemModel {
 
   @Column('decimal', { precision: 10, scale: 2 })
   totalPrice: number;
+
+  @Column('jsonb', { nullable: true })
+  note: object;
 
   // 可以根據需要添加創建時間和更新時間
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

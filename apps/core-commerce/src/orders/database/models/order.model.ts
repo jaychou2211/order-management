@@ -6,8 +6,8 @@ export class OrderModel {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid' })
-  customerId: string;
+  @Column()
+  customerEmail: string;
 
   @Column('jsonb')
   address: object;
@@ -38,7 +38,7 @@ export class OrderModel {
   @Column()
   paymentMethod: string;
 
-  @Column({ nullable: true })
-  note: string;
+  @Column('jsonb', { nullable: true })
+  note: object;
 }
 

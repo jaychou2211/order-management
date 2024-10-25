@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 import { AmazonOrderEvent, IAmazonOrderRepository } from "./amazon-order-repository.interface";
 import { AmazonOrder } from "./amazon-order.model";
+import { omit } from "lodash";
 
 @Injectable()
 export class AmazonOrderRepository implements IAmazonOrderRepository {
@@ -23,11 +24,14 @@ export class AmazonOrderRepository implements IAmazonOrderRepository {
       .findOneBy({ AmazonOrderId: amazonOrder.AmazonOrderId });
 
     // 寫入資料庫(想保留任意時刻的狀態)
-    await this.dataSource.getRepository(AmazonOrder).save(amazonOrder);
+    await this.dataSource.getRepository(AmazonOrder).save({
+      AmazonOrderId: amazonOrder.AmazonOrderId,
+      detail: omit(amazonOrder, 'AmazonOrderId'),
+    });
 
     // 回傳事件
     return {
-      event: existed ? AmazonOrderEvent.UPDATE : AmazonOrderEvent.CREATE,
+      event: existed ? AmazonOrderEvent.UPDATED : AmazonOrderEvent.CREATED,
       AmazonOrderId: amazonOrder.AmazonOrderId,
     }
   }

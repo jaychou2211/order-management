@@ -18,6 +18,10 @@ export class CreateOrderItemDto {
   @IsNumber()
   @IsPositive()
   totalPrice: number;
+
+  @IsObject()
+  @IsOptional()
+  note: object;
 }
 
 export class CreateOrderDto {
@@ -25,7 +29,7 @@ export class CreateOrderDto {
   id: string;
 
   @IsString()
-  customerId: string;
+  customerEmail: string;
 
   @IsObject()
   address: object;
@@ -49,8 +53,9 @@ export class CreateOrderDto {
   @IsString()
   paymentMethod: string;
 
-  @IsString()
-  note: string;
+  @IsObject()
+  @IsOptional()
+  note: object;
 
   @IsArray()
   @ValidateNested({ each: true })

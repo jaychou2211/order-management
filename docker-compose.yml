@@ -1,0 +1,46 @@
+services:
+  core-commerce:
+    build:
+      context: .
+      dockerfile: ./apps/core-commerce/Dockerfile
+      target: development
+    command: npm run start:dev core-commerce
+    # env_file:
+    #   - ./apps/core-commerce/.env
+    depends_on:
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+  channel-orders:
+    build:
+      context: .
+      dockerfile: ./apps/channel-orders/Dockerfile
+      target: development
+    command: npm run start:dev channel-orders
+    # env_file:
+    #   - ./apps/channel-orders/.env
+    depends_on:
+      - postgres
+      - core-commerce
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3002:3000'
+  postgres:
+    image: postgres:16.1
+    container_name: dog_cat_star_postgres
+    environment:
+      POSTGRES_DB: homequiz
+      POSTGRES_USER: pizza
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5441:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

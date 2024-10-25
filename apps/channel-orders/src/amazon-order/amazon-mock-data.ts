@@ -5,7 +5,6 @@ const AmazonOrderId = '114-3941689-8772232';
 export const orderList = [
   {
     "AmazonOrderId": AmazonOrderId,
-    "SellerOrderId": "1234-5678",
     "PurchaseDate": "2024-10-24T08:30:00Z",
     "LastUpdateDate": "2024-10-24T09:15:00Z",
     "OrderStatus": "Shipped",
@@ -156,77 +155,3 @@ export const orderItems = [
     "DeemedResellerCategory": "NONE"
   }
 ];
-
-// GET /fba/outbound/2020-07-01/fulfillmentOrders
-// ? queryStartDate= {Date}
-// & amazonOrderId= {AmazonOrderId}
-export const shipments = [
-  {
-    "sellerFulfillmentOrderId": "FO-12345",
-    "amazonShipmentId": "SHIP-12345",
-    "fulfillmentOrderStatus": "COMPLETE"
-  },
-  {
-    "sellerFulfillmentOrderId": "FO-67890",
-    "amazonShipmentId": "SHIP-67890",
-    "fulfillmentOrderStatus": "COMPLETE"
-  }
-];
-
-// GET /fba/outbound/2020-07-01/fulfillmentOrders/FO-12345
-export const shipmentDetail_12345 = {
-  "sellerFulfillmentOrderId": "FO-12345",
-  "amazonShipmentId": "SHIP-12345",
-  "fulfillmentOrderStatus": "COMPLETE",
-  "statusUpdatedDate": "2024-10-25T10:00:00Z",
-  "destinationAddress": {
-    "name": "John Doe",
-    "addressLine1": "123 Main St",
-    "city": "Seattle",
-    "stateOrRegion": "WA",
-    "postalCode": "98101",
-    "countryCode": "US"
-  },
-  "fulfillmentOrderItems": [
-    {
-      "sellerSku": "SKU001",
-      "sellerFulfillmentOrderItemId": "ITEM-1",
-      "quantity": 1,
-      "packageNumber": 1
-    },
-    {
-      "sellerSku": "SKU002",
-      "sellerFulfillmentOrderItemId": "ITEM-2",
-      "quantity": 2,
-      "packageNumber": 1
-    }
-  ],
-  "fulfillmentShipments": [
-    {
-      "amazonShipmentId": "SHIP-12345",
-      "fulfillmentCenterId": "ABC123",
-      "fulfillmentShipmentStatus": "SHIPPED",
-      "shippingDate": "2024-10-25T09:00:00Z",
-      "estimatedArrivalDate": "2024-10-27T15:00:00Z",
-      "fulfillmentShipmentItem": [
-        {
-          "sellerSku": "SKU001",
-          "sellerFulfillmentOrderItemId": "ITEM-1",
-          "quantity": 1
-        },
-        {
-          "sellerSku": "SKU002",
-          "sellerFulfillmentOrderItemId": "ITEM-2",
-          "quantity": 2
-        }
-      ],
-      "fulfillmentShipmentPackage": [
-        {
-          "packageNumber": 1,
-          "carrierCode": "UPS",
-          "trackingNumber": "1Z999AA1012345678"
-        }
-      ]
-    }
-  ]
-};

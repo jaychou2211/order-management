@@ -11,8 +11,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
   imports: [
     EventEmitterModule.forRoot(),
     DatabaseModule.forFeature({
-      host: 'localhost',
-      port: 5440,
+      host: 'postgres',
+      port: 5432,
       username: 'pizza',
       password: '123456',
       database: 'homequiz',
@@ -23,7 +23,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         name: 'ORDERS_CLIENT',
         transport: Transport.TCP,
         options: {
-          host: 'localhost',
+          host: 'core-commerce',
           port: 3001,
         },
       },

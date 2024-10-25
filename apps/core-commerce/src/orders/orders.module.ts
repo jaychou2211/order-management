@@ -10,19 +10,20 @@ import { OrderModel } from './database/models/order.model';
 import { ShipmentModel } from './database/models/shipment.model';
 import { OrderItemModel } from './database/models/order-item.model';
 import { ContextStorage } from './context-storage/context.storage';
+import { OrderEventModel } from './database/models/order-event.model';
 
 @Module({
   imports: [DatabaseModule.forFeature({
-    host: 'localhost',
-    port: 5440,
+    host: 'postgres',
+    port: 5432,
     username: 'pizza',
     password: '123456',
     database: 'homequiz',
-    entities: [OrderModel, ShipmentModel, OrderItemModel],
+    entities: [OrderModel, ShipmentModel, OrderItemModel, OrderEventModel],
   })],
   controllers: [OrdersController],
   providers: [
-    OrderCommandService, OrderStateMachine,
+    OrderStateMachine, OrderCommandService,
     OrderQueryService, QueryAccessRule, {
       provide: 'ORDER_QUERY_HANDLER',
       useClass: OrderQueryHandler

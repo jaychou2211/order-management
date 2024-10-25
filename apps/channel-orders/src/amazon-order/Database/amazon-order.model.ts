@@ -8,6 +8,6 @@ export class AmazonOrder {
   @Column()
   AmazonOrderId: string;
 
-  @Column('json')
+  @Column('jsonb', { nullable: true })
   detail: Object;
 }

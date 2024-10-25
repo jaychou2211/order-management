@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IAmazonOrderRepository } from './Database/amazon-order-repository.interface';
-import { orderItems, orderList, shipmentDetail_12345, shipments } from './amazon-mock-data';
+import { orderItems, orderList, order } from './amazon-mock-data';
 import { ClientProxy } from '@nestjs/microservices';
+import { OrderChannel, OrderStatus } from '@app/common';
 
 @Injectable()
 export class AmazonOrderService {
@@ -18,7 +19,8 @@ export class AmazonOrderService {
   /**
    * 假設透過 Amazon SP API 
    * GET /orders/v0/orders
-   * 取得 10 分鐘內的所有訂單
+   * 使用 LastUpdatedAfter/LastUpdatedBefore 而不是 CreatedAfter/CreatedBefore 來追蹤訂單狀態變化
+   * 取得時間段內的所有變化過的訂單們
    */
   async fetchOrders() {
     // after fetching
@@ -42,56 +44,7 @@ export class AmazonOrderService {
 
   async createOrder(AmazonOrderId: string) {
     // 捏資料
-    // 通知 core-commerce 創建訂單
-    console.log('createOrder_in_service');
-    const order =
-    {
-      "id": null,
-      "customerId": "ed03fdf5-8ce4-4a66-b76b-8220e5da3b29",
-      "address": "123 Main St, Taipei, Taiwan 10001",
-      "createdAt": "2023-05-15T10:30:00Z",
-      "status": "created",
-      "paymentInfo": {
-        "cardType": "Visa",
-        "last4Digits": "4321"
-      },
-      "paymentMethod": "credit_card",
-      "note": "Please leave the package at the front door",
-      "shipments": [
-        {
-          "id": null,
-          "status": "pending",
-          "paymentStatus": "pending",
-          "orderItems": [
-            {
-              "id": null,
-              "productId": "PROD-001",
-              "quantity": 2,
-              "totalPrice": 1000
-            },
-            {
-              "id": null,
-              "productId": "PROD-002",
-              "quantity": 1,
-              "totalPrice": 500
-            }
-          ]
-        },
-        {
-          "id": null,
-          "status": "pending",
-          "paymentStatus": "pending",
-          "orderItems": [
-            {
-              "id": null,
-              "productId": "PROD-003",
-              "quantity": 3,
-              "totalPrice": 1500
-            }
-          ]
-        }
-      ]
-    }
+    const order = await this.getOrder(AmazonOrderId);
     this.ordersClient.emit('order.create', {
       ...order,
       Authorization: 'Bearer SYSTEM'
@@ -99,17 +52,47 @@ export class AmazonOrderService {
   }
 
   async updateOrder(AmazonOrderId: string) {
-
-    // 通知 core-commerce 更新訂單
+    // 捏資料後, 通知 core-commerce 更新訂單
+    // this.ordersClient.emit('order.update', {
+    //   ...order,
+    //   Authorization: 'Bearer SYSTEM'
+    // });
     throw new Error('Not implemented');
   }
 
-  private async getOrderItems(AmazonOrderId: string) {
-    return { ...orderItems };
-  };
+  private async getOrder(AmazonOrderId: string) {
+    // 假設 get by AmazonOrderId
+    // GET /orders/v0/orders/{orderId}
+    return {
+      id: null,
+      customerEmail: order.BuyerInfo.BuyerEmail,
+      address: order.DefaultShipFromLocationAddress,
+      channel: OrderChannel.AMAZON,
+      channelOrderId: AmazonOrderId,
+      createdAt: order.PurchaseDate,
+      status: OrderStatus.CREATED,
+      paymentInfo: {
+        PaymentMethodDetails: order.PaymentMethodDetails
+      },
+      paymentMethod: order.PaymentMethod,
+      note: null,
+      orderItems: await this.getOrderItems(AmazonOrderId),
+    };
+  }
 
-  private async getOrderShipments(AmazonOrderId: string) {
-    const orderShipments = { ...shipments };
-    const detailShipments = { ...shipmentDetail_12345 };
+  private async getOrderItems(AmazonOrderId: string) {
+    // GET /orders/v0/orders/{orderId}/orderItems
+    // 捏成 core-commerce 的 order 體系在意的形狀 😳
+    return orderItems.map(orderItem => ({
+      id: orderItem.OrderItemId,
+      productId: orderItem.ASIN,
+      quantity: orderItem.ProductInfo.NumberOfItems,
+      totalPrice: parseFloat(orderItem.ItemPrice.Amount) * orderItem.ProductInfo.NumberOfItems,
+      note: {
+        // Amazon平台的訂單有配送日期, 而咱們團隊在意這資訊
+        ScheduledDeliveryStartDate: orderItem.ScheduledDeliveryStartDate,
+        ScheduledDeliveryEndDate: orderItem.ScheduledDeliveryEndDate,
+      }
+    }));
   };
 }

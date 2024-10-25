@@ -1,8 +1,8 @@
 import { AmazonOrder } from "./amazon-order.model";
 
 export enum AmazonOrderEvent {
-  CREATE = 'create',
-  UPDATE = 'update',
+  CREATED = 'created',
+  UPDATED = 'updated',
 }
 
 // 這裡的情境很單純

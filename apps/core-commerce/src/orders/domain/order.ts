@@ -18,7 +18,7 @@ export enum OrderStatus {
 
 type OrderProps = Pick<Order,
   'id' |
-  'customerId' |
+  'customerEmail' |
   'address' |
   'channel' |
   'channelOrderId' |
@@ -33,7 +33,7 @@ type OrderProps = Pick<Order,
 
 export class Order {
   id: string;
-  customerId: string;
+  customerEmail: string;
   address: object; // 送貨地址
   channel: OrderChannel; // 銷售渠道
   channelOrderId: string; // 銷售渠道訂單編號
@@ -41,7 +41,7 @@ export class Order {
   status: OrderStatus; // 訂單狀態
   paymentInfo: any; // 付款資訊
   paymentMethod: string; // 付款方式
-  note: string;   // 備註
+  note: object | null;   // 備註
   shipments: Shipment[];
   orderItems: OrderItem[];
 
@@ -49,7 +49,7 @@ export class Order {
     order: OrderProps
   ) {
     this.id = order.id;
-    this.customerId = order.customerId;
+    this.customerEmail = order.customerEmail;
     this.address = order.address;
     this.channel = order.channel;
     this.channelOrderId = order.channelOrderId;

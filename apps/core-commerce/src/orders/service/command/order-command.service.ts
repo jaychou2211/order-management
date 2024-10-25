@@ -61,12 +61,13 @@ export class OrderCommandService {
     if (!finalStates.includes(order.status)) throw '狀態不吻合';
 
     // 更新訂單
-    await this.orderRepository.save(order);
+    await this.orderRepository.save(order, domainEvents);
 
     // 推送事件
     domainEvents.forEach(domainEvent => {
       // this.eventBus.publish(domainEvent);
-      console.log(domainEvent);
+      console.log('event_bus emit the new domainevent:');
+      console.dir(domainEvent, { depth: Infinity });
     });
 
     // release distributed lock
@@ -74,7 +75,8 @@ export class OrderCommandService {
   }
 
   public async create(createOrderProps: Parameters<typeof Order.create>[0]) {
-    const result = this.orderStateMachine.canExecute(OrderCommand.CREATE, null, this.identity);
+    const result = this.orderStateMachine
+      .canExecute(OrderCommand.CREATE, null, this.identity);
     if (!result.canExecute) throw '身份不允許或是目前狀態不允許執行該動作';
 
     // 照理來講這裡要先跟 ProductService 確認商品的資訊
@@ -84,18 +86,19 @@ export class OrderCommandService {
     // 建立訂單
     const { order, domainEvents } = Order.create(createOrderProps);
     if (!result.finalStates.includes(order.status)) throw '結束狀態不吻合';
-    await this.orderRepository.save(order);
+    await this.orderRepository.save(order, domainEvents);
 
     // 推送事件
     domainEvents.forEach(domainEvent => {
       // this.eventBus.publish(domainEvent);
-      console.log(domainEvent);
+      console.log('event_bus emit the new domainevent:');
+      console.dir(domainEvent, { depth: Infinity });
     });
     return true;
   };
 
   public async check(
-    orderId: string, 
+    orderId: string,
     createShipmentDtoList: Parameters<typeof Order.prototype.check>[0]
   ) {
     return this.safeChangeState(orderId, OrderCommand.CHECK, (order => order.check(createShipmentDtoList)));

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { QueryAccessRule } from "./query-access-rule";
 import { OrderQuery } from "./order-query-list";
 import { IOrderQueryHandler } from "../../database/order-query-handler.interface";
@@ -18,6 +18,12 @@ export class OrderQueryService {
   }
 
   async getOrder(orderId: string) {
-    return this.orderQueryHandler.findById(orderId);
+    const order = await this.orderQueryHandler.findById(orderId);
+    if (!order) throw new NotFoundException(`Order with ID ${orderId} does not exist`);
+    return order;
+  }
+
+  async getOrdersHistory(orderId: string) {
+    return this.orderQueryHandler.getOrdersHistory(orderId);
   }
 }

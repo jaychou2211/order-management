@@ -15,7 +15,9 @@ export class QueryAccessRule {
   constructor() {
     this.queryAccessList.push(
       // 取得單一訂單
-      new QueryAccess(OrderQuery.GET_ORDER, ["USER", "STAFF", "PARTNER", "SYSTEM"])
+      new QueryAccess(OrderQuery.GET_ORDER, ["USER", "STAFF", "PARTNER", "SYSTEM"]),
+      // 取得訂單歷程
+      new QueryAccess(OrderQuery.GET_ORDERS_HISTORY, ["USER", "STAFF", "SYSTEM"])
     );
   };
 

@@ -33,6 +33,13 @@ export class OrdersController {
     return this.orderQueryService.getOrder(id);
   }
 
+  @Get(':id/history')
+  @QueryAction(OrderQuery.GET_ORDERS_HISTORY)
+  @UseGuards(AuthGuard, QueryGuard)
+  getOrdersHistory(@Param('id') id: string) {
+    return this.orderQueryService.getOrdersHistory(id);
+  }
+
   @Post()
   @CommandAction(OrderCommand.CREATE)
   @UseGuards(AuthGuard, CommandGuard)

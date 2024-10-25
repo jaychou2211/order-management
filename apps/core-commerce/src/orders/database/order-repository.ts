@@ -5,6 +5,7 @@ import { ShipmentModel } from './models/shipment.model';
 import { OrderItemModel } from './models/order-item.model';
 import { OrderMapper } from './order-mapper';
 import { Order } from '../domain/order';
+import { OrderEventModel } from './models/order-event.model';
 
 export class OrderRepository implements IOrderRepository {
   constructor(
@@ -19,13 +20,16 @@ export class OrderRepository implements IOrderRepository {
     return OrderMapper.toDomain(orderData, shipmentDataList, orderItemDataList);
   };
 
-  async save(order: Order): Promise<void> {
+  async save(order: Order, domainEvents: OrderEventModel[]): Promise<void> {
     const trxConnection = this.transaction.getTrxConnection();
     const orderModel = OrderMapper.toModel(order);
     try {
       await trxConnection.manager.getRepository(OrderModel).save(orderModel.orderData);
       await trxConnection.manager.getRepository(ShipmentModel).save(orderModel.shipmentDataList);
       await trxConnection.manager.getRepository(OrderItemModel).save(orderModel.orderItemDataList);
+      await trxConnection.manager.getRepository(OrderEventModel).save(
+        domainEvents.map(event => ({ detail: event, orderId: order.id }))
+      );
       await this.transaction.commit();
     } catch (error) {
       await this.transaction.rollback();

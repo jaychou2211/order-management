@@ -3,7 +3,11 @@ GET http://localhost:3000/orders
 Authorization: Bearer USER
 
 ### Get Order
-GET http://localhost:3000/orders/79b3e213-434e-4bd2-b637-36be2ea37bfe
+GET http://localhost:3000/orders/dbf8279f-a484-4669-bd31-eed124b67614
+Authorization: Bearer USER
+
+### Get Order History
+GET http://localhost:3000/orders/dd729503-6ea2-419a-bee6-bbdc7c14c63e/history
 Authorization: Bearer USER
 
 ### Create Order
@@ -15,7 +19,7 @@ Authorization: Bearer USER
 
 {
   "id": null,
-  "customerId": "ed03fdf5-8ce4-4a66-b76b-8220e5da3b29",
+  "customerEmail": "cumonkeyte@gmail.com",
   "address": {
     "name": "John Doe",
     "addressLine1": "123 Main St",
@@ -33,7 +37,9 @@ Authorization: Bearer USER
     "last4Digits": "4321"
   },
   "paymentMethod": "credit_card",
-  "note": "Please leave the package at the front door",
+  "note": {
+    "customerNote": "Please leave the package at the front door"
+  },
   "orderItems": [
     {
       "id": null,

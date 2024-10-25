@@ -13,7 +13,7 @@ export class OrderMapper {
     orderItemDataList: OrderItemModel[],
   ): Order {
     const orderItems = orderItemDataList
-      .map(item => pick(item, ['id', 'productId', 'quantity', 'totalPrice']))
+      .map(item => pick(item, ['id', 'productId', 'quantity', 'totalPrice', 'note']))
     const shipments = shipmentDataList
       .map(shipment => pick(shipment, ['id', 'status', 'paymentStatus']))
       .map(shipment => new Shipment({
@@ -33,8 +33,6 @@ export class OrderMapper {
     shipmentDataList: Omit<ShipmentModel, 'createdAt'>[];
     orderItemDataList: Omit<OrderItemModel, 'createdAt'>[];
   } {
-    console.log('36 :');
-    console.dir(order, { depth: Infinity });
     const { shipments, orderItems, ...orderData } = order;
     return {
       orderData,
