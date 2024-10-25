@@ -94,8 +94,11 @@ export class OrderCommandService {
     return true;
   };
 
-  public async check(orderId: string) {
-    return this.safeChangeState(orderId, OrderCommand.CHECK, (order => order.check()));
+  public async check(
+    orderId: string, 
+    createShipmentDtoList: Parameters<typeof Order.prototype.check>[0]
+  ) {
+    return this.safeChangeState(orderId, OrderCommand.CHECK, (order => order.check(createShipmentDtoList)));
   }
 
   public async ship(orderId: string, shipmentId: string) {

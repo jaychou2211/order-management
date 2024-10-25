@@ -1,8 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { IsNumber, IsPositive, Min, IsString, ValidateNested, IsArray, IsEnum, IsDateString, IsObject, MinLength } from 'class-validator';
+import { IsNumber, IsPositive, Min, IsString, IsEnum, IsDateString, IsObject, IsOptional, IsArray, ValidateNested } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-import { PaymentStatus, ShipmentStatus } from '../domain/shipment';
-import { OrderStatus } from '../domain/order';
+import { OrderChannel, OrderStatus } from '../domain/order';
 
 export class CreateOrderItemDto {
   @Transform(({ value }) => value || uuidv4())
@@ -21,22 +20,6 @@ export class CreateOrderItemDto {
   totalPrice: number;
 }
 
-export class CreateShipmentDto {
-  @Transform(({ value }) => value || uuidv4())
-  id: string;
-
-  @IsEnum(ShipmentStatus)
-  status: ShipmentStatus;
-
-  @IsEnum(PaymentStatus)
-  paymentStatus: PaymentStatus;
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreateOrderItemDto)
-  orderItems: CreateOrderItemDto[];
-}
-
 export class CreateOrderDto {
   @Transform(({ value }) => value || uuidv4())
   id: string;
@@ -44,8 +27,15 @@ export class CreateOrderDto {
   @IsString()
   customerId: string;
 
+  @IsObject()
+  address: object;
+
+  @IsEnum(OrderChannel)
+  channel: OrderChannel;
+
   @IsString()
-  address: string;
+  @IsOptional()
+  channelOrderId: string;
 
   @IsDateString()
   createdAt: string;
@@ -64,6 +54,6 @@ export class CreateOrderDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateShipmentDto)
-  shipments: CreateShipmentDto[];
+  @Type(() => CreateOrderItemDto)
+  orderItems: CreateOrderItemDto[];
 }

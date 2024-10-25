@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn } from 'typeorm';
-import { OrderStatus } from '../../domain/order';
+import { OrderChannel, OrderStatus } from '../../domain/order';
 
 @Entity('orders')
 export class OrderModel {
@@ -9,8 +9,18 @@ export class OrderModel {
   @Column({ type: 'uuid' })
   customerId: string;
 
-  @Column()
-  address: string;
+  @Column('jsonb')
+  address: object;
+
+  @Column({
+    type: 'enum',
+    enum: OrderChannel,
+    default: OrderChannel.DOG_CAT
+  })
+  channel: OrderChannel;
+
+  @Column({ nullable: true })
+  channelOrderId: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

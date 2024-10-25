@@ -1,6 +1,12 @@
 import { OrderItem } from "./order-item";
 import { Shipment, ShipmentStatus } from "./shipment";
 
+export enum OrderChannel {
+  DOG_CAT = 'dog_cat',
+  AMAZON = 'amazon',
+  MOMO = 'momo'
+}
+
 export enum OrderStatus {
   CREATED = 'created',
   CONFIRMED = 'confirmed',
@@ -14,37 +20,30 @@ type OrderProps = Pick<Order,
   'id' |
   'customerId' |
   'address' |
+  'channel' |
+  'channelOrderId' |
+  'createdAt' |
   'status' |
   'paymentInfo' |
   'paymentMethod' |
   'note' |
-  'shipments'
+  'shipments' |
+  'orderItems'
 >;
-
-type CreateOrderProps = Pick<Order,
-  'id' |
-  'customerId' |
-  'address' |
-  'status' |
-  'paymentInfo' |
-  'paymentMethod' |
-  'note'
-> & {
-  shipments: (
-    Pick<Shipment, 'id' | 'status' | 'paymentStatus'> &
-    { orderItems: Pick<OrderItem, 'id' | 'productId' | 'quantity' | 'totalPrice'>[] }
-  )[];
-};
 
 export class Order {
   id: string;
   customerId: string;
-  address: string; // 送貨地址
+  address: object; // 送貨地址
+  channel: OrderChannel; // 銷售渠道
+  channelOrderId: string; // 銷售渠道訂單編號
+  createdAt: Date; // 訂單建立時間
   status: OrderStatus; // 訂單狀態
   paymentInfo: any; // 付款資訊
   paymentMethod: string; // 付款方式
   note: string;   // 備註
   shipments: Shipment[];
+  orderItems: OrderItem[];
 
   private constructor(
     order: OrderProps
@@ -52,28 +51,24 @@ export class Order {
     this.id = order.id;
     this.customerId = order.customerId;
     this.address = order.address;
+    this.channel = order.channel;
+    this.channelOrderId = order.channelOrderId;
+    this.createdAt = order.createdAt;
     this.status = order.status;
     this.paymentInfo = order.paymentInfo;
     this.paymentMethod = order.paymentMethod;
     this.note = order.note;
     this.shipments = order.shipments;
+    this.orderItems = order.orderItems;
   }
 
-  static create(order: CreateOrderProps) {
-    //  先把每個 shipment 的 orderItems 的 type 做轉換
-    const listOfOrderItems = order.shipments
-      .map(shipment => shipment.orderItems)
-      .map(orderItems => orderItems.map(orderItem => new OrderItem(orderItem)));
-    //  再把每個 shipment 的 type 做轉換（用上剛剛轉換好的 orderItems）
-    const shipments = order.shipments.map((shipment, index) => new Shipment({
-      ...shipment,
-      orderItems: listOfOrderItems[index]
-    }));
-    //  產出完整的 order
+  static create(order: OrderProps) {
     return {
       order: new Order({
         ...order,
-        shipments
+        channelOrderId: order.channel === OrderChannel.DOG_CAT
+          ? order.id
+          : order.channelOrderId
       }),
       domainEvents: [
         {
@@ -87,7 +82,22 @@ export class Order {
     }
   };
 
-  check() {
+  check(
+    shipments: (Pick<Shipment, 'id' | 'status' | 'paymentStatus'> & { orderItemIdList: string[] })[]
+  ) {
+    // 1. 檢查出貨單的 orderItem 數量與訂單的 orderItem 數量是否相符
+    const orderItemIdList = shipments.flatMap(shipment => shipment.orderItemIdList);
+    if (orderItemIdList.length !== this.orderItems.length)
+      throw new Error('出貨單的 orderItem 數量與訂單的 orderItem 數量不相符');
+    if (new Set(orderItemIdList).size !== orderItemIdList.length)
+      throw new Error('出貨單的 orderItem 有重複');
+    // 2. 檢查通過,產出該 order 的 shipments
+    const orderItemMap = new Map(this.orderItems.map(orderItem => [orderItem.id, orderItem]));
+    this.shipments = shipments.map(shipment => {
+      const orderItems = shipment.orderItemIdList.map(id => orderItemMap.get(id));
+      return new Shipment({ ...shipment, orderItems });
+    });
+    // 3. 把 order 的狀態改成 confirmed
     const oldStatus = this.status;
     this.status = OrderStatus.CONFIRMED;
     return [{

@@ -11,7 +11,7 @@ export class OrderItemModel {
   @Column({ type: 'uuid' })
   orderId: string;
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', nullable: true })
   shipmentId: string;
 
   @Column('int')

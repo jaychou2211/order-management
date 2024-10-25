@@ -10,6 +10,7 @@ import { OrderCommand } from './service/command/order-command-list';
 import { OrderQuery } from './service/query/order-query-list';
 import { OrderInterceptor } from './interceptors/order.interceptor';
 import { EventPattern, Payload } from '@nestjs/microservices';
+import { CreateShipmentDtoList } from './dto/check-order.dto';
 
 @Controller('orders')
 @UseInterceptors(OrderInterceptor)
@@ -36,21 +37,32 @@ export class OrdersController {
   @CommandAction(OrderCommand.CREATE)
   @UseGuards(AuthGuard, CommandGuard)
   createOrder(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderCommandService.create(createOrderDto);
+    return this.orderCommandService.create({
+      ...createOrderDto,
+      shipments: [],
+      createdAt: new Date()
+    });
   }
 
   @EventPattern('order.create')
   @CommandAction(OrderCommand.CREATE)
   @UseGuards(AuthGuard, CommandGuard)
   createOrderWithEvent(@Payload() data: CreateOrderDto) {
-    return this.orderCommandService.create(data);
+    return this.orderCommandService.create(({
+      ...data,
+      shipments: [],
+      createdAt: new Date()
+    }));
   }
 
   @Put(':id/check')
   @CommandAction(OrderCommand.CHECK)
   @UseGuards(AuthGuard, CommandGuard)
-  checkOrder(@Param('id') id: string) {
-    return this.orderCommandService.check(id);
+  checkOrder(
+    @Param('id') id: string,
+    @Body() CreateShipmentDtoList: CreateShipmentDtoList
+  ) {
+    return this.orderCommandService.check(id, CreateShipmentDtoList.shipmentDtoList);
   }
 
   @Put(':id/shipments/:shipmentId/ship')

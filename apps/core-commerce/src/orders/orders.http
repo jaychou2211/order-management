@@ -3,7 +3,7 @@ GET http://localhost:3000/orders
 Authorization: Bearer USER
 
 ### Get Order
-GET http://localhost:3000/orders/a10fb905-95d6-4033-b300-1079f5da153b
+GET http://localhost:3000/orders/79b3e213-434e-4bd2-b637-36be2ea37bfe
 Authorization: Bearer USER
 
 ### Create Order
@@ -16,7 +16,16 @@ Authorization: Bearer USER
 {
   "id": null,
   "customerId": "ed03fdf5-8ce4-4a66-b76b-8220e5da3b29",
-  "address": "123 Main St, Taipei, Taiwan 10001",
+  "address": {
+    "name": "John Doe",
+    "addressLine1": "123 Main St",
+    "city": "Seattle",
+    "stateOrRegion": "WA",
+    "postalCode": "98101",
+    "countryCode": "US"
+  },
+  "channel": "dog_cat",
+  "channelOrderId": null,
   "createdAt": "2023-05-15T10:30:00Z",
   "status": "created",
   "paymentInfo": {
@@ -25,38 +34,50 @@ Authorization: Bearer USER
   },
   "paymentMethod": "credit_card",
   "note": "Please leave the package at the front door",
-  "shipments": [
+  "orderItems": [
     {
       "id": null,
-      "status": "pending",
-      "paymentStatus": "pending",
-      "orderItems": [
-        {
-          "id": null,
-          "productId": "PROD-001",
-          "quantity": 2,
-          "totalPrice": 1000
-        },
-        {
-          "id": null,
-          "productId": "PROD-002",
-          "quantity": 1,
-          "totalPrice": 500
-        }
-      ]
+      "productId": "PROD-001",
+      "quantity": 2,
+      "totalPrice": 1000
     },
     {
       "id": null,
-      "status": "pending",
-      "paymentStatus": "pending",
-      "orderItems": [
-        {
-          "id": null,
-          "productId": "PROD-003",
-          "quantity": 3,
-          "totalPrice": 1500
-        }
-      ]
+      "productId": "PROD-002",
+      "quantity": 1,
+      "totalPrice": 500
+    },
+    {
+      "id": null,
+      "productId": "PROD-003",
+      "quantity": 3,
+      "totalPrice": 1500
     }
   ]
 }
+
+### Check Order
+PUT http://localhost:3000/orders/3b92ac4e-33aa-4d5d-a81a-73b554cbc9f3/check
+Content-Type: application/json
+Authorization: Bearer STAFF
+
+{
+  "shipmentDtoList": [
+  {
+    "id": null,
+    "status": "pending",
+    "paymentStatus": "pending",
+    "orderItemIdList": [
+    "2b6d4d1b-6823-454c-b0bb-0a83869dee04"
+    ]
+  },
+  {
+    "id": null,
+    "status": "pending",
+    "paymentStatus": "pending",
+    "orderItemIdList": [
+      "014ae485-496c-4263-baa9-3510b946b5d9",
+      "d56e26a0-bd3d-447b-b29c-147370856bb4"
+    ]
+  }
+]}
