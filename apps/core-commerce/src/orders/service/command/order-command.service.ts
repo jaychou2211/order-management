@@ -58,7 +58,7 @@ export class OrderCommandService {
 
     // 執行
     const domainEvents = await operation(order);
-    if (!finalStates.includes(order.status)) throw '狀態不吻合';
+    if (finalStates[0] !== null && !finalStates.includes(order.status)) throw '狀態不吻合';
 
     // 更新訂單
     await this.orderRepository.save(order, domainEvents);
