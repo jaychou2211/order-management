@@ -19,7 +19,7 @@ export class CommandGuard implements CanActivate {
   ): Promise<boolean> {
     // 取得 orderId
     const orderId = context.getType() === 'http'
-      ? context.switchToHttp().getRequest().params.orderId
+      ? context.switchToHttp().getRequest().params.id
       : context.switchToRpc().getData().id;
     // 取得 要執行的動作名稱
     const actionName = this.reflector.get('COMMAND', context.getHandler());
