@@ -1,13 +1,20 @@
+###
+@orderId = 493d03ba-e88d-480e-8246-f404678646db
+@item1_id = 56342632-b258-4fc0-a82a-5b07b2e9d475
+@item2_id = 034ec8d9-5e14-4f0d-978d-d23767473778
+@item3_id = 31cee809-2cfd-4cc5-9ed2-55c52789e55f
+@shipmentId = 82a88ab0-6000-46cf-8c5d-4c6d45c86723
+
 ### Health Check
 GET http://localhost:3000/orders
 Authorization: Bearer USER
 
 ### Get Order
-GET http://localhost:3000/orders/dbf8279f-a484-4669-bd31-eed124b67614
+GET http://localhost:3000/orders/{{orderId}}
 Authorization: Bearer USER
 
 ### Get Order History
-GET http://localhost:3000/orders/dd729503-6ea2-419a-bee6-bbdc7c14c63e/history
+GET http://localhost:3000/orders/{{orderId}}/history
 Authorization: Bearer USER
 
 ### Create Order
@@ -63,7 +70,7 @@ Authorization: Bearer USER
 }
 
 ### Check Order
-PUT http://localhost:3000/orders/3b92ac4e-33aa-4d5d-a81a-73b554cbc9f3/check
+PUT http://localhost:3000/orders/{{orderId}}/check
 Content-Type: application/json
 Authorization: Bearer STAFF
 
@@ -74,7 +81,7 @@ Authorization: Bearer STAFF
     "status": "pending",
     "paymentStatus": "pending",
     "orderItemIdList": [
-    "2b6d4d1b-6823-454c-b0bb-0a83869dee04"
+      "{{item1_id}}"
     ]
   },
   {
@@ -82,8 +89,21 @@ Authorization: Bearer STAFF
     "status": "pending",
     "paymentStatus": "pending",
     "orderItemIdList": [
-      "014ae485-496c-4263-baa9-3510b946b5d9",
-      "d56e26a0-bd3d-447b-b29c-147370856bb4"
+      "{{item2_id}}",
+      "{{item3_id}}"
     ]
   }
 ]}
+
+### Ship Order
+PUT http://localhost:3000/orders/{{orderId}}/shipments/{{shipmentId}}/ship
+Authorization: Bearer STAFF
+
+### Deliver Order
+PUT http://localhost:3000/orders/{{orderId}}/shipments/{{shipmentId}}/deliver
+Authorization: Bearer PARTNER
+
+### Pay Order
+PUT http://localhost:3000/orders/{{orderId}}/shipments/{{shipmentId}}/pay
+Authorization: Bearer SYSTEM
+

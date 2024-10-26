@@ -81,7 +81,7 @@ describe('All rules of order', () => {
       const { order, domainEvents } = Order.create(mockOrder);
       // assert
       expect(order.id).toBe(mockOrder.id);
-      expect(order.customerId).toBe(mockOrder.customerId);
+      expect(order.customerEmail).toBe(mockOrder.customerEmail);
       expect(domainEvents[0].name).toBe('order_created');
       expect(domainEvents[0].newStatus).toBe(OrderStatus.CREATED);
     });

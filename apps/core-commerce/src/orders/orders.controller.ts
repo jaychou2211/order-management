@@ -104,9 +104,9 @@ export class OrdersController {
   @CommandAction(OrderCommand.PAY)
   @UseGuards(AuthGuard, CommandGuard)
   payOrder(@Param('id') id: string, @Param('shipmentId') shipmentId: string) {
-    throw new Error('Not implemented');
     // to-do 需要一點事前的加工
-    // return this.orderCommandService.pay(id, shipmentId);
+    // 假設繳費成功
+    return this.orderCommandService.pay(id, shipmentId, true);
   }
 
 }

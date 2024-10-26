@@ -1,4 +1,4 @@
 
-### Create Order
+### Fetch Amazon Order
 POST http://localhost:3002/amazon-orders/fetch
-Authorization: Bearer YESSSSSSSSIR
+Authorization: Bearer SYSTEM

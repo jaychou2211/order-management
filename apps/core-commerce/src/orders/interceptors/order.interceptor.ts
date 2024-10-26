@@ -1,7 +1,6 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler, HttpException, Logger } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { Transaction } from '@app/common';
 import { ContextStorage } from '../context-storage/context.storage';
 
 @Injectable()

@@ -25,12 +25,6 @@ export class AmazonOrderController {
     return this.amazonOrderService.createOrder(payload.AmazonOrderId);
   }
 
-  // @Post('create-order')
-  // async createOrderHttp() {
-  //   console.log('createOrderHttp');
-  //   return this.amazonOrderService.createOrder('123456');
-  // }
-
   /**
    * 模擬收到 message queue 的 [amazon-order.update] event
    */
