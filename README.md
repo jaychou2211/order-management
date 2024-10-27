@@ -1,3 +1,6 @@
+## Miro whiteboard:
+[View my project design and development process](https://miro.com/app/board/uXjVLNpQSPk=/?share_link_id=573981850909)
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
